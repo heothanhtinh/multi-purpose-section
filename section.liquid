@@ -1,0 +1,347 @@
+{%- assign section_theme = 'Section Name' | handle -%}
+
+<div class="o-row" style="--row: {{ section.settings.spacing_mobile }}px; --row-desk: {{ section.settings.spacing_desktop }}px;--bg-colour: {{ section.settings.background_colour }};">
+    <div class="o-container  {% if section.settings.full_width %}o-container--full  o-container--no-paded{% endif %} c-grid-section__inner  c-grid-section__inner--{{ section.settings.layout }}">
+        {% if section.settings.heading_show == true %}
+            <div class="c-grid-section__header  c-grid-section__header--{{ theme }}">
+                {%- render 'object_content',
+                    class: '',
+                    position: section.settings.content_position,
+                    subtitle: section.settings.subtitle,
+                    subtitle_class: 't-font-size--milli  u-mb-20',
+                    title: section.settings.title,
+                    title_tag: section.settings.heading_title_tag,
+                    title_class: 't-font-size--epsilon',
+                    copy: section.settings.text,
+                    copy_class: 'c-content__copy--grey'
+                    button_label: section.settings.button_label,
+                    button_link: section.settings.button_link,
+                    button_type: section.settings.button_type,
+                -%}
+            </div>
+        {% endif %}
+        {% if section.blocks.size > 0 %}
+            <div class="c-grid-section__content">
+                {%- for block in section.blocks -%}
+                    <div class="c-grid-section__content__item  c-grid-section__content__item--{{ section_theme }}  c-grid-section__content__item--{% if block.settings.image != blank %}col-img{% else %}col-text{% endif %} {% if block.settings.video_link != blank %}video{% endif %}  c-grid-section__content__item--{{ block.settings.column_vertical_align }}  c-grid-section__content__item--{{ block.settings.column_order }}  c-grid-section__content__item--{{ block.settings.text_color }}">
+                        {%- if block.settings.image != blank or block.settings.video_url != blank or block.settings.video_src != blank -%}
+                            <div class="c-grid-section__content__item-image">
+                                {%- if block.settings.image != blank -%}
+                                    {%- render 'object_image' with block.settings.image,
+                                        class: 'o-ar  o-ar--shed-banner  o-ar--shed-banner-mob@mob' ,
+                                        img_class: "o-ar__item"
+                                        x_position: block.settings.image_x_position,
+                                        y_position: block.settings.image_y_position,
+                                        width: 600,
+                                        height: 600
+                                    -%}
+                                {%- endif -%}
+
+
+                                {%- if block.settings.video_url != blank or block.settings.video_src != blank -%}
+                                    {% comment %}theme-check-disable{% endcomment %}
+                                    {%- if block.settings.video_url != blank -%}
+                                        {%- liquid
+                                            assign video_src = block.settings.video_url
+                                            assign video_frame_class = 'o-ar o-ar--yt-video'
+                                        -%}
+                                    {%- endif -%}
+
+                                    {%- if block.settings.video_src != blank -%}
+                                        {%- liquid
+                                            assign video_src = block.settings.video_src
+                                            assign video_frame_class = 'o-ar o-ar--video'
+                                        -%}
+                                    {%- endif -%}
+                                    {% comment %}theme-check-enable{% endcomment %}
+
+                                {%- endif -%}
+                            </div>
+                        {% endif %}
+                        {% if block.settings.title != blank or block.settings.content != blank or block.settings.button_link != blank %}
+                            <div class="c-grid-section__content__item-content  {% if section.settings.full_width %}o-container  o-container--no-paded{% endif %}">
+                                {%- render 'object_content',
+                                    class: '',
+                                    position: block.settings.content_position,
+                                    subtitle: block.settings.subtitle,
+                                    subtitle_class: 't-font-size--milli  u-mb-20',
+                                    title: block.settings.title,
+                                    title_tag: block.settings.heading_title_tag,
+                                    title_class: 't-font-size--epsilon',
+                                    copy: block.settings.text,
+                                    copy_class: 'c-content__copy--grey'
+                                    button_label: block.settings.button_label,
+                                    button_link: block.settings.button_link,
+                                    button_type: block.settings.button_type,
+                                -%}
+                            </div>
+                        {% endif %}
+                    </div>
+                {%- endfor -%}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Sheducation Banner",
+    "class": "c-grid-section",
+    "tag": "article",
+    "max_blocks": 1,
+    "presets": [
+        {
+            "category": "Content",
+            "name": "Content Media",
+            "blocks": []
+        }
+    ],
+    "settings": [
+        {
+            "type": "header",
+            "content": "Section Settings"
+        },
+        {
+            "type": "range",
+            "id": "spacing_desktop",
+            "label": "Desktop Spacing",
+            "info": "Adjust spacing below this section for desktop",
+            "min": 0,
+            "max": 80,
+            "default": 64,
+            "step": 4,
+            "unit": "px"
+        },
+        {
+            "type": "range",
+            "id": "spacing_mobile",
+            "label": "Mobile Spacing",
+            "info": "Adjust spacing below this section for mobile",
+            "min": 0,
+            "max": 80,
+            "default": 48,
+            "step": 4,
+            "unit": "px"
+       },
+       {
+            "type": "select",
+            "id": "full_width",
+            "label": "Full Width",
+            "options": [
+                { "value": "false", "label": "No" },
+                { "value": "true", "label": "Yes" }
+            ],
+            "default": "false"
+            },
+        {
+            "type": "radio",
+            "id": "layout",
+            "label": "Layout",
+            "options": [
+                { "value": "", "label": "Media | Content" },
+                { "value": "reverse", "label": "Content | Media" }
+            ],
+            "default": "reverse"
+        },
+        {
+            "type": "color",
+            "id": "background_colour",
+            "label": "Background Colour"
+        },
+        {
+            "type": "color",
+            "id": "text_colour",
+            "label": "Text Colour",
+            "default": "#4B4B4B"
+        },
+        {
+            "type": "select",
+            "id": "button_theme",
+            "label": "Button theme",
+            "options": [
+              {
+                "value": "dark",
+                "label": "Dark"
+              },
+              {
+                "value": "light",
+                "label": "Light"
+              }
+            ],
+            "default": "dark"
+        },
+        {
+            "type": "header",
+            "content": "Content",
+            "info": "Add your content here"
+        },
+        {
+            "type": "select",
+            "id": "heading_title_tag",
+            "label": "Heading H Tag",
+            "options": [
+                { "value": "h1", "label": "H1" },
+                { "value": "h2", "label": "H2" },
+                { "value": "h3", "label": "H3" },
+                { "value": "h4", "label": "H4" },
+                { "value": "h5", "label": "H5" },
+                { "value": "h6", "label": "H6" },
+                { "value": "h7", "label": "H7" },
+                { "value": "h8", "label": "H8" },
+                { "value": "h9", "label": "H9" }
+            ],
+            "default": "h2"
+        },
+        {
+            "type": "paragraph",
+            "content": "Add [highlight]Highlighted word[/higlight] to add peach highlight to your word"
+        },
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Heading Title",
+            "default": "Title"
+        },
+        {
+            "type": "text",
+            "id": "subtitle",
+            "label": "Subheading Title",
+            "default": "Sub Title"
+        },
+        {
+            "type": "paragraph",
+            "content": "For simple bullets insert the character symbol to the start of the sentence: • (new line for each bullet)"
+        },
+        {
+            "type": "richtext",
+            "id": "text",
+            "label": "Content",
+            "default": "<p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vivamus suscipit tortor eget</p>"
+        },
+        {
+            "type": "select",
+            "id": "content_position",
+            "label": "Content Position",
+            "options": [
+                { "value": "left-top", "label": "Left Top" },
+                { "value": "left-center", "label": "Left Center" },
+                { "value": "left-bottom", "label": "Left Bottom" },
+                { "value": "middle-top","label": "Middle Top" },
+                { "value": "middle-center","label": "Middle Center" },
+                { "value": "middle-bottom","label": "Middle Bottom" },
+                { "value": "right-top","label": "Right Top" },
+                { "value": "right-center","label": "Right Center" },
+                { "value": "right-bottom","label": "Right Bottom" }
+            ],
+            "default": "left-center"
+        },
+        {
+            "type": "checkbox",
+            "id": "heading_show",
+            "label": "Show Heading?",
+            "default": false
+        }
+    ],
+    "blocks": [
+        {
+            "type": "image",
+            "name": "Image",
+            "settings": [
+                {
+                    "type": "header",
+                    "content": "Image"
+                },
+                {
+                    "type": "select",
+                    "id": "lazy_loading",
+                    "label": "Image Lazyloading",
+                    "info": "If this image is the first and at the top of the page. Change to eager",
+                    "options": [
+                        { "value": "lazy", "label": "Lazy" },
+                        { "value": "eager", "label": "Eager" }
+                    ],
+                    "default": "lazy"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Image",
+                    "info": "Landscape orientation (21:10 w:h). 1920 x 940px minimum recommended"
+                },
+                {
+                    "type": "image_picker",
+                    "id": "mobile_image",
+                    "label": "Mobile Image",
+                    "info": "Landscape orientation (21:10 w:h). 1920 x 940px minimum recommended"
+                },
+                {
+                    "type": "range",
+                    "id": "image_x_position",
+                    "label": "Image X-axis Position",
+                    "min": 1,
+                    "max": 100,
+                    "default": 50,
+                    "unit": "%"
+                },
+                {
+                    "type": "range",
+                    "id": "image_y_position",
+                    "label": "Image Y-axis Position",
+                    "min": 1,
+                    "max": 100,
+                    "default": 50,
+                    "unit": "%"
+                },
+                {
+                    "type": "header",
+                    "content": "Content",
+                    "info": "Add your content here"
+                },
+                {
+                    "type": "select",
+                    "id": "heading_title_tag",
+                    "label": "Heading H Tag",
+                    "options": [
+                        { "value": "h1", "label": "H1" },
+                        { "value": "h2", "label": "H2" },
+                        { "value": "h3", "label": "H3" },
+                        { "value": "h4", "label": "H4" },
+                        { "value": "h5", "label": "H5" },
+                        { "value": "h6", "label": "H6" },
+                        { "value": "h7", "label": "H7" },
+                        { "value": "h8", "label": "H8" },
+                        { "value": "h9", "label": "H9" }
+                    ],
+                    "default": "h2"
+                },
+                {
+                    "type": "paragraph",
+                    "content": "Add [highlight]Highlighted word[/higlight] to add peach highlight to your word"
+                },
+                {
+                    "type": "text",
+                    "id": "title",
+                    "label": "Heading Title",
+                    "default": "Title"
+                },
+                {
+                    "type": "text",
+                    "id": "subtitle",
+                    "label": "Subheading Title",
+                    "default": "Sub Title"
+                },
+                {
+                    "type": "paragraph",
+                    "content": "For simple bullets insert the character symbol to the start of the sentence: • (new line for each bullet)"
+                },
+                {
+                    "type": "richtext",
+                    "id": "text",
+                    "label": "Content",
+                    "default": "<p>Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vivamus suscipit tortor eget</p>"
+                }
+            ]
+        }
+    ]
+}
+{% endschema %}
